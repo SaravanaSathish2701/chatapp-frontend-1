@@ -47,7 +47,7 @@ const CreateGroups = () => {
       "http://localhost:8000/chat/createGroup",
       {
         name: groupName,
-        users: '["647d94aea97e40a17278c7e5","647d999e4c3dd7ca9a2e6543"]',
+        users: '["671e59e26fd3014e8dda1963","671e5a6f6adef0d34840281d"]',
       },
       config
     );
@@ -97,7 +97,7 @@ const CreateGroups = () => {
         <IconButton
           className={"icon" + (lightTheme ? "" : " dark")}
           onClick={() => {
-            handleClickOpen(); 
+            handleClickOpen();
           }}
         >
           <DoneOutlineRoundedIcon />
