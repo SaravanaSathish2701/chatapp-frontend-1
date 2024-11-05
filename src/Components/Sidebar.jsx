@@ -14,7 +14,7 @@ import { toggleTheme } from "../Features/themeSlice";
 import axios from "axios";
 import { myContext } from "./MainContainer";
 
-function Sidebar() {
+const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const lightTheme = useSelector((state) => state.themeKey);
@@ -33,7 +33,7 @@ function Sidebar() {
 
   useEffect(() => {
     const fetchConversations = async () => {
-      if (!userData) return; // Ensure userData is available
+      if (!userData) return;
       const config = {
         headers: {
           Authorization: `Bearer ${userData.data.token}`,
@@ -42,11 +42,14 @@ function Sidebar() {
 
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/chat/", config);
+        const response = await axios.get(
+          "https://chatapp-backend-1-azi4.onrender.com/chat/",
+          config
+        );
         setConversations(response.data);
       } catch (err) {
         setError(err.message);
-        console.error(err);
+        console.error("Error fetching conversations:", err);
       } finally {
         setLoading(false);
       }
@@ -61,18 +64,20 @@ function Sidebar() {
   };
 
   const renderConversation = (conversation) => {
-    const user = conversation.users[1]?.name || "Unknown User"; // Optional chaining to avoid errors
+    const user = conversation.users.find((u) => u._id !== userData.data._id);
+    const userName = user ? user.name : "Unknown User";
 
     return (
       <div
         onClick={() => {
           setRefresh(!refresh);
-          navigate(`chat/${conversation._id}&${user}`);
+          navigate(`chat/${conversation._id}&${userName}`);
         }}
-        className={"conversation-item" + (lightTheme ? "" : " dark")}
+        className={`conversation-item${lightTheme ? "" : " dark"}`}
+        key={conversation._id}
       >
-        <p className={"con-icon" + (lightTheme ? "" : " dark")}>{user[0]}</p>
-        <p className={"con-title" + (lightTheme ? "" : " dark")}>{user}</p>
+        <p className={`con-icon${lightTheme ? "" : " dark"}`}>{userName[0]}</p>
+        <p className={`con-title${lightTheme ? "" : " dark"}`}>{userName}</p>
         <p className="con-lastMessage">
           {conversation.latestMessage
             ? conversation.latestMessage.content
@@ -84,56 +89,53 @@ function Sidebar() {
 
   return (
     <div className="sidebar-container">
-      <div className={"sb-header" + (lightTheme ? "" : " dark")}>
+      <div className={`sb-header${lightTheme ? "" : " dark"}`}>
         <div className="other-icons">
           <IconButton onClick={() => navigate("/app/welcome")}>
-            <AccountCircleIcon
-              className={"icon" + (lightTheme ? "" : " dark")}
-            />
+            <AccountCircleIcon className={`icon${lightTheme ? "" : " dark"}`} />
           </IconButton>
           <IconButton onClick={() => navigate("users")}>
-            <PersonAddIcon className={"icon" + (lightTheme ? "" : " dark")} />
+            <PersonAddIcon className={`icon${lightTheme ? "" : " dark"}`} />
           </IconButton>
           <IconButton onClick={() => navigate("groups")}>
-            <GroupAddIcon className={"icon" + (lightTheme ? "" : " dark")} />
+            <GroupAddIcon className={`icon${lightTheme ? "" : " dark"}`} />
           </IconButton>
           <IconButton onClick={() => navigate("create-groups")}>
-            <AddCircleIcon className={"icon" + (lightTheme ? "" : " dark")} />
+            <AddCircleIcon className={`icon${lightTheme ? "" : " dark"}`} />
           </IconButton>
           <IconButton onClick={() => dispatch(toggleTheme())}>
             {lightTheme ? (
-              <NightlightIcon
-                className={"icon" + (lightTheme ? "" : " dark")}
-              />
+              <NightlightIcon className={`icon${lightTheme ? "" : " dark"}`} />
             ) : (
-              <LightModeIcon className={"icon" + (lightTheme ? "" : " dark")} />
+              <LightModeIcon className={`icon${lightTheme ? "" : " dark"}`} />
             )}
           </IconButton>
           <IconButton onClick={handleLogout}>
-            <ExitToAppIcon className={"icon" + (lightTheme ? "" : " dark")} />
+            <ExitToAppIcon className={`icon${lightTheme ? "" : " dark"}`} />
           </IconButton>
         </div>
       </div>
-      <div className={"sb-search" + (lightTheme ? "" : " dark")}>
-        <IconButton className={"icon" + (lightTheme ? "" : " dark")}>
+      <div className={`sb-search${lightTheme ? "" : " dark"}`}>
+        <IconButton className={`icon${lightTheme ? "" : " dark"}`}>
           <SearchIcon />
         </IconButton>
         <input
           placeholder="Search"
-          className={"search-box" + (lightTheme ? "" : " dark")}
+          className={`search-box${lightTheme ? "" : " dark"}`}
         />
       </div>
-      <div className={"sb-conversations" + (lightTheme ? "" : " dark")}>
+      <div className={`sb-conversations${lightTheme ? "" : " dark"}`}>
         {error && <div>Error: {error}</div>}
-        {conversations.length === 0 && <div>No conversations available.</div>}
-        {conversations.map((conversation) => (
-          <div key={conversation._id} className="conversation-container">
-            {renderConversation(conversation)}
-          </div>
-        ))}
+        {loading ? (
+          <div>Loading conversations...</div>
+        ) : conversations.length === 0 ? (
+          <div>No conversations available.</div>
+        ) : (
+          conversations.map((conversation) => renderConversation(conversation))
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default Sidebar;

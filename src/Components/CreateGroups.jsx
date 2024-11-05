@@ -16,42 +16,52 @@ import { useNavigate } from "react-router-dom";
 const CreateGroups = () => {
   const lightTheme = useSelector((state) => state.themeKey);
   const userData = JSON.parse(localStorage.getItem("userData"));
-  // console.log("Data from LocalStorage : ", userData);
   const nav = useNavigate();
+
+  // Redirect to login if user is not authenticated
   if (!userData) {
     console.log("User not Authenticated");
     nav("/");
   }
+
   const user = userData.data;
   const [groupName, setGroupName] = useState("");
   const [open, setOpen] = useState(false);
 
+  // Open dialog for group creation confirmation
   const handleClickOpen = () => {
     setOpen(true);
   };
 
+  // Close dialog
   const handleClose = () => {
     setOpen(false);
   };
 
-  console.log("User Data from CreateGroups : ", userData);
-
-  const createGroup = () => {
+  // Function to create a new group via API
+  const createGroup = async () => {
     const config = {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     };
 
-    axios.post(
-      "http://localhost:8000/chat/createGroup",
-      {
-        name: groupName,
-        users: '["671e59e26fd3014e8dda1963","671e5a6f6adef0d34840281d"]',
-      },
-      config
-    );
-    nav("/app/groups");
+    try {
+      // POST request to create group with specified name and users
+      await axios.post(
+        "https://chatapp-backend-1-azi4.onrender.com/chat/createGroups", // Ensure this endpoint is correct
+        {
+          name: groupName,
+          users: JSON.stringify([user.id]), // Example user ID
+        },
+        config
+      );
+      console.log("Group created successfully!");
+      // Navigate to the groups page after creation
+      nav("/app/groups");
+    } catch (error) {
+      console.error("Error creating group:", error);
+    }
   };
 
   return (
@@ -64,16 +74,16 @@ const CreateGroups = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Do you want to create a Group Named " + groupName}
+            {"Do you want to create a Group Named " + groupName + "?"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              This will create a create group in which you will be the admin and
-              other will be able to join this group.
+              This will create a new group in which you will be the admin, and
+              others will be able to join this group.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button
               onClick={() => {
                 createGroup();
@@ -81,7 +91,7 @@ const CreateGroups = () => {
               }}
               autoFocus
             >
-              Agree
+              Confirm
             </Button>
           </DialogActions>
         </Dialog>
@@ -90,15 +100,11 @@ const CreateGroups = () => {
         <input
           placeholder="Enter Group Name"
           className={"search-box" + (lightTheme ? "" : " dark")}
-          onChange={(e) => {
-            setGroupName(e.target.value);
-          }}
+          onChange={(e) => setGroupName(e.target.value)}
         />
         <IconButton
           className={"icon" + (lightTheme ? "" : " dark")}
-          onClick={() => {
-            handleClickOpen();
-          }}
+          onClick={handleClickOpen}
         >
           <DoneOutlineRoundedIcon />
         </IconButton>

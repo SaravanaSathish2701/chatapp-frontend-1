@@ -31,12 +31,12 @@ function ChatArea() {
 
     try {
       const { data } = await axios.get(
-        `http://localhost:8000/message/${chat_id}`,
+        `https://chatapp-backend-1-azi4.onrender.com/message/${chat_id}`,
         config
       );
       setAllMessages(data);
       setLoaded(true);
-      scrollToBottom();
+      scrollToBottom(); // Scroll after messages are loaded
     } catch (error) {
       console.error(
         "Error fetching messages:",
@@ -58,7 +58,7 @@ function ChatArea() {
 
     try {
       await axios.post(
-        "http://localhost:8000/message/",
+        "https://chatapp-backend-1-azi4.onrender.com/message/",
         {
           content: messageContent,
           chatId: chat_id,
@@ -66,7 +66,7 @@ function ChatArea() {
         config
       );
       setMessageContent("");
-      setRefresh((prev) => !prev);
+      setRefresh((prev) => !prev); // Refresh to fetch new messages
     } catch (error) {
       console.error(
         "Error sending message:",
@@ -84,6 +84,13 @@ function ChatArea() {
   useEffect(() => {
     fetchMessages();
   }, [refresh, chat_id]);
+
+  // Scroll to bottom on messages update
+  useEffect(() => {
+    if (loaded) {
+      scrollToBottom();
+    }
+  }, [allMessages, loaded]);
 
   // Render loading state
   if (!loaded) {

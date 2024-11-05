@@ -12,11 +12,9 @@ import { myContext } from "./MainContainer";
 
 const Users = () => {
   const { refresh, setRefresh } = useContext(myContext);
-
   const lightTheme = useSelector((state) => state.themeKey);
   const [users, setUsers] = useState([]);
   const userData = JSON.parse(localStorage.getItem("userData"));
-  // console.log("Data from LocalStorage : ", userData);
   const nav = useNavigate();
   const dispatch = useDispatch();
 
@@ -32,11 +30,40 @@ const Users = () => {
         Authorization: `Bearer ${userData.data.token}`,
       },
     };
-    axios.get("http://localhost:8000/user/fetchUsers", config).then((data) => {
-      console.log("Data refreshed in Users panel ");
-      setUsers(data.data);
-    });
+    axios
+      .get(
+        "https://chatapp-backend-1-azi4.onrender.com/user/fetchUsers",
+        config
+      )
+      .then((response) => {
+        console.log("Data refreshed in Users panel ");
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching users: ", error);
+      });
   }, [refresh]);
+
+  const handleChatCreation = (userId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userData.data.token}`,
+      },
+    };
+    axios
+      .post(
+        "https://chatapp-backend-1-azi4.onrender.com/chat/",
+        { userId },
+        config
+      )
+      .then(() => {
+        console.log("Chat created with user ", userId);
+        dispatch(refreshSidebarFun());
+      })
+      .catch((error) => {
+        console.error("Error creating chat: ", error);
+      });
+  };
 
   return (
     <div className="list-container">
@@ -44,15 +71,14 @@ const Users = () => {
         <img
           src={logo}
           style={{ height: "2rem", width: "2rem", marginLeft: "10px" }}
+          alt="Logo"
         />
         <p className={"ug-title" + (lightTheme ? "" : " dark")}>
           Available Users
         </p>
         <IconButton
           className={"icon" + (lightTheme ? "" : " dark")}
-          onClick={() => {
-            setRefresh(!refresh);
-          }}
+          onClick={() => setRefresh(!refresh)}
         >
           <RefreshIcon />
         </IconButton>
@@ -67,35 +93,18 @@ const Users = () => {
         />
       </div>
       <div className="ug-list">
-        {users.map((user, index) => {
-          return (
-            <div
-              className={"list-tem" + (lightTheme ? "" : " dark")}
-              key={index}
-              onClick={() => {
-                console.log("Creating chat with ", user.name);
-                const config = {
-                  headers: {
-                    Authorization: `Bearer ${userData.data.token}`,
-                  },
-                };
-                axios.post(
-                  "http://localhost:8000/chat/",
-                  {
-                    userId: user._id,
-                  },
-                  config
-                );
-                dispatch(refreshSidebarFun());
-              }}
-            >
-              <p className={"con-icon" + (lightTheme ? "" : " dark")}>T</p>
-              <p className={"con-title" + (lightTheme ? "" : " dark")}>
-                {user.name}
-              </p>
-            </div>
-          );
-        })}
+        {users.map((user, index) => (
+          <div
+            className={"list-item" + (lightTheme ? "" : " dark")}
+            key={index}
+            onClick={() => handleChatCreation(user._id)}
+          >
+            <p className={"con-icon" + (lightTheme ? "" : " dark")}>T</p>
+            <p className={"con-title" + (lightTheme ? "" : " dark")}>
+              {user.name}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

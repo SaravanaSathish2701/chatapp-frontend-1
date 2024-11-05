@@ -31,7 +31,7 @@ const Login = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8000/user/login/",
+        "https://chatapp-backend-1-azi4.onrender.com/user/login/",
         data,
         config
       );
@@ -59,7 +59,7 @@ const Login = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8000/user/register/",
+        "https://chatapp-backend-1-azi4.onrender.com/user/register/",
         data,
         config
       );
@@ -109,8 +109,7 @@ const Login = () => {
               color="secondary"
               name="name"
               onKeyDown={(event) => {
-                if (event.code == "Enter") {
-                  // console.log(event);
+                if (event.code === "Enter") {
                   loginHandler();
                 }
               }}
@@ -124,18 +123,12 @@ const Login = () => {
               color="secondary"
               name="password"
               onKeyDown={(event) => {
-                if (event.code == "Enter") {
-                  // console.log(event);
+                if (event.code === "Enter") {
                   loginHandler();
                 }
               }}
             />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={loginHandler}
-              // isLoading
-            >
+            <Button variant="outlined" color="secondary" onClick={loginHandler}>
               Login
             </Button>
             <p>
@@ -164,10 +157,8 @@ const Login = () => {
               variant="outlined"
               color="secondary"
               name="name"
-              helperText=""
               onKeyDown={(event) => {
-                if (event.code == "Enter") {
-                  // console.log(event);
+                if (event.code === "Enter") {
                   signUpHandler();
                 }
               }}
@@ -180,8 +171,7 @@ const Login = () => {
               color="secondary"
               name="email"
               onKeyDown={(event) => {
-                if (event.code == "Enter") {
-                  // console.log(event);
+                if (event.code === "Enter") {
                   signUpHandler();
                 }
               }}
@@ -195,8 +185,7 @@ const Login = () => {
               color="secondary"
               name="password"
               onKeyDown={(event) => {
-                if (event.code == "Enter") {
-                  // console.log(event);
+                if (event.code === "Enter") {
                   signUpHandler();
                 }
               }}
@@ -209,7 +198,7 @@ const Login = () => {
               Sign Up
             </Button>
             <p>
-              Already have an Account ?
+              Already have an Account ?{" "}
               <span
                 className="hyper"
                 onClick={() => {

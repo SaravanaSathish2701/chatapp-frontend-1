@@ -5,12 +5,13 @@ import React from "react";
 
 export default function Toaster({ message }) {
   const [open, setOpen] = React.useState(true);
-  function handleClose(event, reason) {
+
+  const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
-  }
+  };
 
   return (
     <div>
@@ -22,18 +23,22 @@ export default function Toaster({ message }) {
         open={open}
         autoHideDuration={3000}
         onClose={handleClose}
-        variant="warning"
-        ContentProps={{
-          "aria-describedby": "message-id",
-        }}
-        message={message}
-        action={[
-          <IconButton key="close" onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>,
-        ]}
       >
-        <Alert onClose={handleClose} severity="warning" sx={{ width: "30vw" }}>
+        <Alert
+          onClose={handleClose}
+          severity="warning"
+          sx={{ width: "30vw" }}
+          action={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        >
           {message}
         </Alert>
       </Snackbar>
