@@ -18,7 +18,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const lightTheme = useSelector((state) => state.themeKey);
-  const { refresh, setRefresh } = useContext(myContext);
+  const { refresh } = useContext(myContext);  // Only listen for refresh
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,6 +46,7 @@ const Sidebar = () => {
           "https://chatapp-backend-1-azi4.onrender.com/chat/",
           config
         );
+        console.log("Fetched conversations:", response.data); // Debugging log
         setConversations(response.data);
       } catch (err) {
         setError(err.message);
@@ -64,15 +65,12 @@ const Sidebar = () => {
   };
 
   const renderConversation = (conversation) => {
-    const user = conversation.users.find((u) => u._id !== userData.data._id);
-    const userName = user ? user.name : "Unknown User";
+    const otherUser = conversation.users.find((u) => u._id !== userData.data._id);
+    const userName = otherUser ? otherUser.name : "Unknown User";
 
     return (
       <div
-        onClick={() => {
-          setRefresh(!refresh);
-          navigate(`chat/${conversation._id}&${userName}`);
-        }}
+        onClick={() => navigate(`chat/${conversation._id}&${userName}`)}
         className={`conversation-item${lightTheme ? "" : " dark"}`}
         key={conversation._id}
       >

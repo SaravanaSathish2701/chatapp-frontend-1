@@ -39,7 +39,7 @@ const Groups = () => {
 
       try {
         const response = await axios.get(
-          "https://chatapp-backend-1-azi4.onrender.com/chat/fetchGroups", // Use the correct endpoint
+          "https://chatapp-backend-1-azi4.onrender.com/chat/fetchGroups",
           config
         );
         console.log("Group Data from API:", response.data);

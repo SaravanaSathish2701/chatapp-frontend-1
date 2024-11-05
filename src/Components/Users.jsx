@@ -11,100 +11,115 @@ import { refreshSidebarFun } from "../Features/refreshSidebar";
 import { myContext } from "./MainContainer";
 
 const Users = () => {
-  const { refresh, setRefresh } = useContext(myContext);
+  const { refresh } = useContext(myContext);
   const lightTheme = useSelector((state) => state.themeKey);
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   if (!userData) {
     console.log("User not Authenticated");
-    nav(-1);
+    navigate(-1);
   }
 
   useEffect(() => {
-    console.log("Users refreshed");
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userData.data.token}`,
-      },
+    const fetchUsers = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userData.data.token}`,
+        },
+      };
+      try {
+        const { data } = await axios.get(
+          "https://chatapp-backend-1-azi4.onrender.com/user/fetchUsers",
+          config
+        );
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     };
-    axios
-      .get(
-        "https://chatapp-backend-1-azi4.onrender.com/user/fetchUsers",
-        config
-      )
-      .then((response) => {
-        console.log("Data refreshed in Users panel ");
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users: ", error);
-      });
-  }, [refresh]);
 
-  const handleChatCreation = (userId) => {
+    fetchUsers();
+  }, [userData, refresh]);
+
+  const handleCreateChat = async (userId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${userData.data.token}`,
       },
     };
-    axios
-      .post(
+
+    try {
+      await axios.post(
         "https://chatapp-backend-1-azi4.onrender.com/chat/",
         { userId },
         config
-      )
-      .then(() => {
-        console.log("Chat created with user ", userId);
-        dispatch(refreshSidebarFun());
-      })
-      .catch((error) => {
-        console.error("Error creating chat: ", error);
-      });
+      );
+      console.log("Chat created with user ID:", userId);
+      dispatch(refreshSidebarFun());
+    } catch (error) {
+      console.error("Error creating chat:", error);
+    }
   };
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="list-container">
-      <div className={"ug-header" + (lightTheme ? "" : " dark")}>
+      <div className={`ug-header ${lightTheme ? "" : " dark"}`}>
         <img
           src={logo}
-          style={{ height: "2rem", width: "2rem", marginLeft: "10px" }}
           alt="Logo"
+          style={{ height: "2rem", width: "2rem", marginLeft: "10px" }}
         />
-        <p className={"ug-title" + (lightTheme ? "" : " dark")}>
+        <p className={`ug-title ${lightTheme ? "" : " dark"}`}>
           Available Users
         </p>
         <IconButton
-          className={"icon" + (lightTheme ? "" : " dark")}
-          onClick={() => setRefresh(!refresh)}
+          className={`icon ${lightTheme ? "" : " dark"}`}
+          onClick={() => {
+            setUsers([]); // Clears current users for a visual refresh indication
+            setSearchTerm(""); // Clears search input
+          }}
         >
           <RefreshIcon />
         </IconButton>
       </div>
-      <div className={"sb-search" + (lightTheme ? "" : " dark")}>
-        <IconButton className={"icon" + (lightTheme ? "" : " dark")}>
+      <div className={`sb-search ${lightTheme ? "" : " dark"}`}>
+        <IconButton className={`icon ${lightTheme ? "" : " dark"}`}>
           <SearchIcon />
         </IconButton>
         <input
           placeholder="Search"
-          className={"search-box" + (lightTheme ? "" : " dark")}
+          className={`search-box ${lightTheme ? "" : " dark"}`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="ug-list">
-        {users.map((user, index) => (
-          <div
-            className={"list-item" + (lightTheme ? "" : " dark")}
-            key={index}
-            onClick={() => handleChatCreation(user._id)}
-          >
-            <p className={"con-icon" + (lightTheme ? "" : " dark")}>T</p>
-            <p className={"con-title" + (lightTheme ? "" : " dark")}>
-              {user.name}
-            </p>
-          </div>
-        ))}
+        {filteredUsers.length === 0 ? (
+          <div>No users available. Try refreshing or searching.</div>
+        ) : (
+          filteredUsers.map((user) => (
+            <div
+              className={`list-item ${lightTheme ? "" : " dark"}`}
+              key={user._id}
+              onClick={() => handleCreateChat(user._id)}
+            >
+              <p className={`con-icon ${lightTheme ? "" : " dark"}`}>
+                {user.name[0].toUpperCase()}
+              </p>
+              <p className={`con-title ${lightTheme ? "" : " dark"}`}>
+                {user.name}
+              </p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
