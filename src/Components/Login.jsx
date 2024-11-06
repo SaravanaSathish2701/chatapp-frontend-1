@@ -38,7 +38,7 @@ const Login = () => {
       console.log("Login : ", response);
       setLogInStatus({ msg: "Success", key: Math.random() });
       setLoading(false);
-      localStorage.setItem("userData", JSON.stringify(response.data));
+      localStorage.setItem("userData", JSON.stringify(response));
       navigate("/app/welcome");
     } catch (error) {
       setLogInStatus({

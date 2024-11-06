@@ -10,7 +10,7 @@ import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import { myContext } from "./MainContainer";
 
-const ChatArea = () => {
+function ChatArea() {
   const lightTheme = useSelector((state) => state.themeKey);
   const [messageContent, setMessageContent] = useState("");
   const messagesEndRef = useRef(null);
@@ -178,6 +178,6 @@ const ChatArea = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ChatArea;
+export default ChatArea;    
