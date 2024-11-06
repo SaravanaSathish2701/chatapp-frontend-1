@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState, useCallback } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
@@ -10,7 +10,7 @@ import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import { myContext } from "./MainContainer";
 
-function ChatArea() {
+const ChatArea = () => {
   const lightTheme = useSelector((state) => state.themeKey);
   const [messageContent, setMessageContent] = useState("");
   const messagesEndRef = useRef(null);
@@ -21,10 +21,14 @@ function ChatArea() {
   const { refresh, setRefresh } = useContext(myContext);
   const [loaded, setLoaded] = useState(false);
 
-  const fetchMessages = useCallback(async () => {
+  // Function to fetch chat messages
+  const fetchMessages = async () => {
     const config = {
-      headers: { Authorization: `Bearer ${userData.data.token}` },
+      headers: {
+        Authorization: `Bearer ${userData.data.token}`,
+      },
     };
+
     try {
       const { data } = await axios.get(
         `https://chatapp-backend-1-azi4.onrender.com/message/${chat_id}`,
@@ -32,7 +36,7 @@ function ChatArea() {
       );
       setAllMessages(data);
       setLoaded(true);
-      scrollToBottom();
+      scrollToBottom(); // Scroll after messages are loaded
     } catch (error) {
       console.error(
         "Error fetching messages:",
@@ -40,22 +44,29 @@ function ChatArea() {
       );
       setLoaded(true);
     }
-  }, [chat_id, userData.data.token]);
+  };
 
+  // Function to send a message
   const sendMessage = async () => {
     if (!messageContent.trim()) return;
 
     const config = {
-      headers: { Authorization: `Bearer ${userData.data.token}` },
+      headers: {
+        Authorization: `Bearer ${userData.data.token}`,
+      },
     };
+
     try {
       await axios.post(
         "https://chatapp-backend-1-azi4.onrender.com/message/",
-        { content: messageContent, chatId: chat_id },
+        {
+          content: messageContent,
+          chatId: chat_id,
+        },
         config
       );
       setMessageContent("");
-      setRefresh((prev) => !prev);
+      setRefresh((prev) => !prev); // Refresh to fetch new messages
     } catch (error) {
       console.error(
         "Error sending message:",
@@ -64,22 +75,30 @@ function ChatArea() {
     }
   };
 
+  // Scroll to the bottom of the messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Fetch messages when component mounts or refresh changes
   useEffect(() => {
     fetchMessages();
-  }, [fetchMessages, refresh, chat_id]);
+  }, [refresh, chat_id]);
 
+  // Scroll to bottom on messages update
   useEffect(() => {
-    if (loaded) scrollToBottom();
-  }, [allMessages.length, loaded]);
+    if (loaded) {
+      scrollToBottom();
+    }
+  }, [allMessages, loaded]);
 
+  // Render loading state
   if (!loaded) {
     return (
       <div
         style={{
+          border: "20px",
+          padding: "10px",
           width: "100%",
           display: "flex",
           flexDirection: "column",
@@ -105,24 +124,21 @@ function ChatArea() {
   }
 
   return (
-    <div className={`chatArea-container ${lightTheme ? "" : " dark"}`}>
-      {/* Chat Header */}
-      <div className={`chatArea-header ${lightTheme ? "" : " dark"}`}>
-        <p className={`con-icon ${lightTheme ? "" : " dark"}`}>
+    <div className={"chatArea-container" + (lightTheme ? "" : " dark")}>
+      <div className={"chatArea-header" + (lightTheme ? "" : " dark")}>
+        <p className={"con-icon" + (lightTheme ? "" : " dark")}>
           {chat_user[0]}
         </p>
-        <div className={`header-text ${lightTheme ? "" : " dark"}`}>
-          <p className={`con-title ${lightTheme ? "" : " dark"}`}>
+        <div className={"header-text" + (lightTheme ? "" : " dark")}>
+          <p className={"con-title" + (lightTheme ? "" : " dark")}>
             {chat_user}
           </p>
         </div>
-        <IconButton className={`icon ${lightTheme ? "" : " dark"}`}>
+        <IconButton className={"icon" + (lightTheme ? "" : " dark")}>
           <DeleteIcon />
         </IconButton>
       </div>
-
-      {/* Messages Container */}
-      <div className={`messages-container ${lightTheme ? "" : " dark"}`}>
+      <div className={"messages-container" + (lightTheme ? "" : " dark")}>
         {allMessages.length === 0 ? (
           <p>No messages yet</p>
         ) : (
@@ -130,8 +146,9 @@ function ChatArea() {
             .slice(0)
             .reverse()
             .map((message) => {
+              const sender = message.sender;
               const self_id = userData.data._id;
-              return message.sender._id === self_id ? (
+              return sender._id === self_id ? (
                 <MessageSelf props={message} key={message._id} />
               ) : (
                 <MessageOthers props={message} key={message._id} />
@@ -140,20 +157,20 @@ function ChatArea() {
         )}
       </div>
       <div ref={messagesEndRef} className="BOTTOM" />
-
-      {/* Input Area */}
-      <div className={`text-input-area ${lightTheme ? "" : " dark"}`}>
+      <div className={"text-input-area" + (lightTheme ? "" : " dark")}>
         <input
           placeholder="Type a Message"
-          className={`search-box ${lightTheme ? "" : " dark"}`}
+          className={"search-box" + (lightTheme ? "" : " dark")}
           value={messageContent}
           onChange={(e) => setMessageContent(e.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter") sendMessage();
+            if (event.code === "Enter") {
+              sendMessage();
+            }
           }}
         />
         <IconButton
-          className={`icon ${lightTheme ? "" : " dark"}`}
+          className={"icon" + (lightTheme ? "" : " dark")}
           onClick={sendMessage}
         >
           <SendIcon />
@@ -161,6 +178,6 @@ function ChatArea() {
       </div>
     </div>
   );
-}
+};
 
 export default ChatArea;

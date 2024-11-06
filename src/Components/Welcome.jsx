@@ -11,6 +11,7 @@ const Welcome = () => {
   if (!userData) {
     console.log("User not authenticated");
     nav("/");
+    return null; // Return null to avoid rendering if data is missing
   }
 
   return (
