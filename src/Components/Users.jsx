@@ -83,8 +83,8 @@ const Users = () => {
         <IconButton
           className={`icon ${lightTheme ? "" : " dark"}`}
           onClick={() => {
-            setUsers([]); // Clears current users for a visual refresh indication
-            setSearchTerm(""); // Clears search input
+            setUsers([]);
+            setSearchTerm("");
           }}
         >
           <RefreshIcon />

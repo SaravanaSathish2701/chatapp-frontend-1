@@ -10,7 +10,6 @@ const Login = () => {
   const [showlogin, setShowLogin] = useState(false);
   const [data, setData] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
   const [logInStatus, setLogInStatus] = useState("");
   const [signInStatus, setSignInStatus] = useState("");
 
@@ -38,7 +37,7 @@ const Login = () => {
       console.log("Login : ", response);
       setLogInStatus({ msg: "Success", key: Math.random() });
       setLoading(false);
-      localStorage.setItem("userData", JSON.stringify(response));
+      localStorage.setItem("userData", JSON.stringify(response.data));
       navigate("/app/welcome");
     } catch (error) {
       setLogInStatus({
@@ -66,7 +65,7 @@ const Login = () => {
       console.log(response);
       setSignInStatus({ msg: "Success", key: Math.random() });
       navigate("/app/welcome");
-      localStorage.setItem("userData", JSON.stringify(response));
+      localStorage.setItem("userData", JSON.stringify(response.data));
       setLoading(false);
     } catch (error) {
       console.log(error);

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { IconButton } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import NightlightIcon from "@mui/icons-material/Nightlight";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const lightTheme = useSelector((state) => state.themeKey);
-  const { refresh } = useContext(myContext);  // Only listen for refresh
+  const { refresh } = useContext(myContext);
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +26,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (!userData) {
-      console.log("User not Authenticated");
       navigate("/");
     }
   }, [navigate, userData]);
@@ -46,11 +45,9 @@ const Sidebar = () => {
           "https://chatapp-backend-1-azi4.onrender.com/chat/",
           config
         );
-        console.log("Fetched conversations:", response.data); // Debugging log
         setConversations(response.data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching conversations:", err);
       } finally {
         setLoading(false);
       }
@@ -65,7 +62,9 @@ const Sidebar = () => {
   };
 
   const renderConversation = (conversation) => {
-    const otherUser = conversation.users.find((u) => u._id !== userData.data._id);
+    const otherUser = conversation.users.find(
+      (u) => u._id !== userData.data._id
+    );
     const userName = otherUser ? otherUser.name : "Unknown User";
 
     return (
@@ -79,7 +78,7 @@ const Sidebar = () => {
         <p className="con-lastMessage">
           {conversation.latestMessage
             ? conversation.latestMessage.content
-            : "No previous Messages, click here to start a new chat"}
+            : "No previous Messages"}
         </p>
       </div>
     );
@@ -129,7 +128,7 @@ const Sidebar = () => {
         ) : conversations.length === 0 ? (
           <div>No conversations available.</div>
         ) : (
-          conversations.map((conversation) => renderConversation(conversation))
+          conversations.map(renderConversation)
         )}
       </div>
     </div>
