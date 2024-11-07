@@ -41,7 +41,6 @@ const Sidebar = () => {
       };
 
       try {
-        setLoading(true);
         const response = await axios.get(
           "https://chatapp-backend-1-azi4.onrender.com/chat/",
           config
