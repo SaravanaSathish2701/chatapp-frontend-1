@@ -48,12 +48,11 @@ const Sidebar = () => {
         );
         console.log("Fetched conversations:", response.data);
         setConversations(response.data);
+        setLoading(false);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching conversations:", err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchConversations();
