@@ -335,7 +335,7 @@ input:focus {
   display: none;
 }
 
-.list-tem {
+.list-item {
   display: flex;
   align-items: center;
   background-color: white;
