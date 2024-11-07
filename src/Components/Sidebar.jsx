@@ -18,8 +18,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const lightTheme = useSelector((state) => state.themeKey);
-  const { refresh } = useContext(myContext); // Only listen for refresh
-const [conversations, setConversations] = useState(["Hi","You","How are u", "Fine", "good", "bad"]);
+  const { refresh } = useContext(myContext);
+  const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userData = JSON.parse(localStorage.getItem("userData"));
