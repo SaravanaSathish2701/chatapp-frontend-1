@@ -84,9 +84,6 @@ const Sidebar = () => {
       </div>
     );
   };
-  
-
-  console.log(loading);
 
   return (
     <div className="sidebar-container">
