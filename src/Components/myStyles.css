@@ -72,7 +72,7 @@ input:focus {
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   margin: 10px;
   overflow: scroll;
-  scrollbar-width: 10;
+  scrollbar-width: none;
 }
 
 .conversation-container {
@@ -102,8 +102,8 @@ input:focus {
   font-size: 2rem;
   font-weight: bolder;
   color: white;
-  height: 48px;
-  width: 48px;
+  height: 35px;
+  width: 35px;
   padding: 2px;
 
   border-radius: 50%;
