@@ -75,7 +75,7 @@ input:focus {
   scrollbar-width: none;
 }
 
-.conversation-container {
+.conversation-item {
   display: grid;
   grid-template-columns: 48px auto;
   grid-template-rows: auto auto;

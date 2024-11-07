@@ -130,6 +130,7 @@ function ChatArea() {
           {chat_user[0]}
         </p>
         <div className={"list-item" + (lightTheme ? "" : " dark")}>
+          
           <p className={"con-title" + (lightTheme ? "" : " dark")}>
             {chat_user}
           </p>
