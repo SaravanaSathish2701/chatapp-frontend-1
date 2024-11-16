@@ -10,7 +10,7 @@ import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import { myContext } from "./MainContainer";
 
-function ChatArea() {
+const ChatArea = () => {
   const lightTheme = useSelector((state) => state.themeKey);
   const [messageContent, setMessageContent] = useState("");
   const messagesEndRef = useRef(null);
@@ -42,7 +42,7 @@ function ChatArea() {
         "Error fetching messages:",
         error.response?.data || error.message
       );
-      setLoaded(true);
+      // setLoaded(true);   //Changes want to remove
     }
   };
 
@@ -83,7 +83,11 @@ function ChatArea() {
   // Fetch messages when component mounts or refresh changes
   useEffect(() => {
     fetchMessages();
-  }, [refresh, chat_id]);
+  }, [refresh]);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [chat_id]);
 
   // Scroll to bottom on messages update
   useEffect(() => {
@@ -93,35 +97,35 @@ function ChatArea() {
   }, [allMessages, loaded]);
 
   // Render loading state
-  if (!loaded) {
-    return (
-      <div
-        style={{
-          border: "20px",
-          padding: "10px",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
-      >
-        <Skeleton
-          variant="rectangular"
-          sx={{ width: "100%", borderRadius: "10px" }}
-          height={60}
-        />
-        <Skeleton
-          variant="rectangular"
-          sx={{ width: "100%", borderRadius: "10px", flexGrow: "1" }}
-        />
-        <Skeleton
-          variant="rectangular"
-          sx={{ width: "100%", borderRadius: "10px" }}
-          height={60}
-        />
-      </div>
-    );
-  }
+  // if (!loaded) {
+  //   return (
+  //     <div
+  //       style={{
+  //         border: "20px",
+  //         padding: "10px",
+  //         width: "100%",
+  //         display: "flex",
+  //         flexDirection: "column",
+  //         gap: "10px",
+  //       }}
+  //     >
+  //       <Skeleton
+  //         variant="rectangular"
+  //         sx={{ width: "100%", borderRadius: "10px" }}
+  //         height={60}
+  //       />
+  //       <Skeleton
+  //         variant="rectangular"
+  //         sx={{ width: "100%", borderRadius: "10px", flexGrow: "1" }}
+  //       />
+  //       <Skeleton
+  //         variant="rectangular"
+  //         sx={{ width: "100%", borderRadius: "10px" }}
+  //         height={60}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={"chatArea-container" + (lightTheme ? "" : " dark")}>
@@ -130,7 +134,6 @@ function ChatArea() {
           {chat_user[0]}
         </p>
         <div className={"list-item" + (lightTheme ? "" : " dark")}>
-          
           <p className={"con-title" + (lightTheme ? "" : " dark")}>
             {chat_user}
           </p>
@@ -179,6 +182,6 @@ function ChatArea() {
       </div>
     </div>
   );
-}
+};
 
-export default ChatArea;    
+export default ChatArea;

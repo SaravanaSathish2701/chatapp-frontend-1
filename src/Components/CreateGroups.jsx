@@ -49,10 +49,10 @@ const CreateGroups = () => {
     try {
       // POST request to create group with specified name and users
       await axios.post(
-        "https://chatapp-backend-1-azi4.onrender.com/chat/createGroups", 
+        "https://chatapp-backend-1-azi4.onrender.com/chat/createGroups",
         {
           name: groupName,
-          users: JSON.stringify([user.id]), 
+          users: JSON.stringify([user.id]),
         },
         config
       );

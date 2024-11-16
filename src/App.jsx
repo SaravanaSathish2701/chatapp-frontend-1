@@ -22,6 +22,12 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="groups" element={<Groups />} />
           <Route path="create-groups" element={<CreateGroups />} />
+          <Route
+            path="*"
+            element={
+              <img src="https://sitechecker.pro/wp-content/uploads/2017/12/ahrefs-404-page-not-found.png" />
+            }
+          />
         </Route>
       </Routes>
     </div>
