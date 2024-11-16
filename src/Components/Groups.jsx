@@ -17,6 +17,7 @@ const Groups = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const token = userData?.data?.token || "";
   const nav = useNavigate();
 
   if (!userData) {
@@ -24,32 +25,29 @@ const Groups = () => {
     nav("/");
   }
 
-  const user = userData?.data || {};
+  // const user = userData?.data || {};
 
   useEffect(() => {
     const fetchGroups = async () => {
-      setLoading(true);
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${token}`,
         },
       };
 
       try {
-        const { data } = await axios.get(
+        const response = await axios.get(
           "https://chatapp-backend-1-azi4.onrender.com/chat/fetchGroups",
           config
         );
-        setGroups(data);
+        setGroups(response.data);
       } catch (error) {
-        console.error("Error fetching groups:", error.message);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching groups:", error);
       }
     };
 
     fetchGroups();
-  }, [refresh]);
+  }, [refresh]); // Only re-run when 'refresh' changes
 
   const filteredGroups = groups.filter((group) =>
     group.chatName.toLowerCase().includes(searchTerm.toLowerCase())
