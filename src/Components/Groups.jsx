@@ -25,8 +25,6 @@ const Groups = () => {
     nav("/");
   }
 
-  // const user = userData?.data || {};
-
   useEffect(() => {
     const fetchGroups = async () => {
       const config = {

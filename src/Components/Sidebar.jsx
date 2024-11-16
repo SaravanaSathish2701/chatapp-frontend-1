@@ -41,21 +41,25 @@ const Sidebar = () => {
       };
 
       try {
+        setLoading(true); // Start loading
+        setError(null); // Clear any previous errors
+
         const response = await axios.get(
           "https://chatapp-backend-1-azi4.onrender.com/chat/",
           config
         );
         console.log("Fetched conversations:", response.data);
         setConversations(response.data);
-        setLoading(false);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "An error occurred while fetching data.");
         console.error("Error fetching conversations:", err);
-      } 
+      } finally {
+        setLoading(false); // Stop loading
+      }
     };
 
     fetchConversations();
-  }, [refresh, userData]);
+  }, [refresh, userData?.data.token]);
 
   const handleLogout = () => {
     localStorage.removeItem("userData");

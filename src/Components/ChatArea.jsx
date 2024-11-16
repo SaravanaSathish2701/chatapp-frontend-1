@@ -42,7 +42,7 @@ const ChatArea = () => {
         "Error fetching messages:",
         error.response?.data || error.message
       );
-      // setLoaded(true);   //Changes want to remove
+      setLoaded(true);
     }
   };
 
@@ -83,11 +83,7 @@ const ChatArea = () => {
   // Fetch messages when component mounts or refresh changes
   useEffect(() => {
     fetchMessages();
-  }, [refresh]);
-
-  useEffect(() => {
-    fetchMessages();
-  }, [chat_id]);
+  }, [refresh, chat_id]);
 
   // Scroll to bottom on messages update
   useEffect(() => {
@@ -96,36 +92,36 @@ const ChatArea = () => {
     }
   }, [allMessages, loaded]);
 
-  // Render loading state
-  // if (!loaded) {
-  //   return (
-  //     <div
-  //       style={{
-  //         border: "20px",
-  //         padding: "10px",
-  //         width: "100%",
-  //         display: "flex",
-  //         flexDirection: "column",
-  //         gap: "10px",
-  //       }}
-  //     >
-  //       <Skeleton
-  //         variant="rectangular"
-  //         sx={{ width: "100%", borderRadius: "10px" }}
-  //         height={60}
-  //       />
-  //       <Skeleton
-  //         variant="rectangular"
-  //         sx={{ width: "100%", borderRadius: "10px", flexGrow: "1" }}
-  //       />
-  //       <Skeleton
-  //         variant="rectangular"
-  //         sx={{ width: "100%", borderRadius: "10px" }}
-  //         height={60}
-  //       />
-  //     </div>
-  //   );
-  // }
+  //Render loading state
+  if (!loaded) {
+    return (
+      <div
+        style={{
+          border: "20px",
+          padding: "10px",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        <Skeleton
+          variant="rectangular"
+          sx={{ width: "100%", borderRadius: "10px" }}
+          height={60}
+        />
+        <Skeleton
+          variant="rectangular"
+          sx={{ width: "100%", borderRadius: "10px", flexGrow: "1" }}
+        />
+        <Skeleton
+          variant="rectangular"
+          sx={{ width: "100%", borderRadius: "10px" }}
+          height={60}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={"chatArea-container" + (lightTheme ? "" : " dark")}>
