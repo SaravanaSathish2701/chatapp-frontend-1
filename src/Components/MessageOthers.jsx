@@ -8,9 +8,9 @@ const MessageOthers = ({ props }) => {
   return (
     <div className={"other-message-container" + (lightTheme ? "" : " dark")}>
       <div className={"conversation-container" + (lightTheme ? "" : " dark")}>
-        <p className={"con-icon" + (lightTheme ? "" : " dark")}>
+        {/* <p className={"con-icon" + (lightTheme ? "" : " dark")}>
           {props.sender.name[0]}
-        </p>
+        </p> */}
         <div className={"other-text-content" + (lightTheme ? "" : " dark")}>
           <p className={"con-title" + (lightTheme ? "" : " dark")}>
             {props.sender.name}
