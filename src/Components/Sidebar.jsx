@@ -18,7 +18,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const lightTheme = useSelector((state) => state.themeKey);
-  const { refresh } = useContext(myContext);
+  const { refresh } = useContext(myContext); // Assuming refresh is a state to trigger fetch
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,13 +27,15 @@ const Sidebar = () => {
   useEffect(() => {
     if (!userData) {
       console.log("User not Authenticated");
-      navigate("/");
+      navigate("/"); // Redirect if not authenticated
     }
   }, [navigate, userData]);
 
+  // Fetch conversations when the component mounts or userData changes
   useEffect(() => {
     const fetchConversations = async () => {
       if (!userData) return;
+
       const config = {
         headers: {
           Authorization: `Bearer ${userData.data.token}`,
@@ -59,7 +61,7 @@ const Sidebar = () => {
     };
 
     fetchConversations();
-  }, [refresh, userData?.data.token]);
+  }, [userData?.data.token]); // Fetch only if the user data or token changes
 
   const handleLogout = () => {
     localStorage.removeItem("userData");
