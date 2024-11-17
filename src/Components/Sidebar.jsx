@@ -42,7 +42,7 @@ const Sidebar = () => {
 
       try {
         setLoading(true); // Start loading
-        setError(null); // Clear any previous errors
+        setError(null);
 
         const response = await axios.get(
           "https://chatapp-backend-1-azi4.onrender.com/chat/",
